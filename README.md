@@ -1,1 +1,2 @@
-# NewBot
+# New preset bot created by Luis and Toni
+MemeSniper — a compact, user-configurable bot preset designed to help savvy traders automatically attempt fast buys of newly-listed meme tokens on decentralized exchanges. Set your budget, slippage tolerance, gas strategies, and pre- and post-trade safety checks; the bot will monitor pools and memecoin launches, execute buys that match your rules, and log outcomes for review. Built with careful attention to transaction safety and transparency — not a get-rich-quick guarantee, but a tool to apply a consistent, repeatable strategy while you watch the market.
