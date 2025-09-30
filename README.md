@@ -14,15 +14,15 @@ This is a lightweight, beginner‑friendly Python starter to manage multiple Sol
 - Python 3.10+
 - Solana CLI, Rust, Node.js, and Anchor CLI
 
-### 1) Install WSL and Development Dependencies
-
+### 1) Install WSL and Development Dependencies (Windows)
+[Installation Documentation](https://solana.com/docs/intro/installation#installation)
 1. Install WSL by running this command in Windows PowerShell:
 ```powershell
 wsl --install
 ```
-After installation completes, restart your computer and follow the WSL setup prompts.
+After installation completes, the Ubuntu(Linux) terminal will be installed and used to follow the WSL setup prompts.
 
-2. Open a WSL terminal and install the Solana CLI and other dependencies:
+2. Open the new Ubuntu  and install the Solana CLI and other dependencies:
 ```bash
 curl --proto '=https' --tlsv1.2 -sSfL https://solana-install.solana.workers.dev | bash
 ```
