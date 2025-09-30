@@ -1,0 +1,7 @@
+solana>=0.30.3
+solders>=0.21.0
+python-dotenv>=1.0.1
+requests>=2.32.3
+aiohttp>=3.9.5
+
+

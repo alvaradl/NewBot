@@ -144,6 +144,14 @@ ENV/
 env.bak/
 venv.bak/
 
+# Solana wallets and secrets (do not commit private keys)
+wallets/*.json
+wallets/**/*.json
+
+# Project local state
+logs/
+*.log
+
 # Spyder project settings
 .spyderproject
 .spyproject
