@@ -1,4 +1,6 @@
-### Solana Multi‑Wallet Trading Bot (Local Dev Setup)
+### MemeSniper - Automated Memecoin Trading Bot
+
+MemeSniper — a compact, user-configurable bot preset designed to help savvy traders automatically attempt fast buys of newly-listed meme tokens on decentralized exchanges. Set your budget, slippage tolerance, gas strategies, and pre- and post-trade safety checks; the bot will monitor pools and memecoin launches, execute buys that match your rules, and log outcomes for review. Built with careful attention to transaction safety and transparency — not a get-rich-quick guarantee, but a tool to apply a consistent, repeatable strategy while you watch the market.
 
 This is a lightweight, beginner‑friendly Python starter to manage multiple Solana wallets and prepare for building a trading bot. It focuses on local development, clarity, and safe handling of secrets.
 
