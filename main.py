@@ -359,20 +359,63 @@ def execute_swap(
         send = input("Send transaction to network? (yes/no): ").strip().lower()
         
         if send in ['yes', 'y']:
-            print("\n📤 Sending transaction...")
+            # Ask about skipping preflight for volatile tokens
+            skip_preflight = False
+            if slippage >= 5.0:  # High slippage suggests volatile token
+                print("\n⚠️  High slippage detected - this might be a volatile token (e.g., Pump.fun)")
+                skip_option = input("Skip preflight check? (recommended for volatile tokens) (yes/no): ").strip().lower()
+                skip_preflight = skip_option in ['yes', 'y']
+                if skip_preflight:
+                    print("ℹ️  Skipping preflight simulation - transaction will be sent directly")
+            
             client = Client(rpc_endpoint)
             
-            result = client.send_transaction(transaction)
+            # Send with or without preflight based on user choice
+            from solana.rpc.types import TxOpts
+            from solana.rpc.commitment import Confirmed
+            opts = TxOpts(skip_preflight=skip_preflight)
+            
+            print("\n📤 Sending transaction...")
+            result = client.send_transaction(transaction, opts=opts)
             signature = result.value
             
-            print("\n" + "=" * 70)
-            print("✅ SWAP SUCCESSFUL!")
-            print("=" * 70)
-            print(f"Transaction signature: {signature}")
-            print(f"View on Solscan: https://solscan.io/tx/{signature}")
-            print("=" * 70)
+            print(f"📤 Transaction sent: {signature}")
+            print("⏳ Waiting for confirmation...")
             
-            return True
+            # Wait for confirmation and check if it actually succeeded
+            try:
+                confirmation = client.confirm_transaction(signature, commitment=Confirmed)
+                
+                # Check if transaction succeeded on-chain
+                if confirmation.value[0].err is None:
+                    print("\n" + "=" * 70)
+                    print("✅ SWAP SUCCESSFUL!")
+                    print("=" * 70)
+                    print(f"Transaction signature: {signature}")
+                    print(f"View on Solscan: https://solscan.io/tx/{signature}")
+                    print("=" * 70)
+                    return True
+                else:
+                    # Transaction failed on-chain
+                    error_info = confirmation.value[0].err
+                    print("\n" + "=" * 70)
+                    print("❌ SWAP FAILED ON-CHAIN")
+                    print("=" * 70)
+                    print(f"Transaction was sent but failed: {error_info}")
+                    print("\n⚠️  You lost transaction fees but the swap didn't execute")
+                    print(f"View details: https://solscan.io/tx/{signature}")
+                    print("\nCommon reasons:")
+                    print("- Price moved beyond slippage tolerance (very common with Pump.fun)")
+                    print("- Insufficient token balance")
+                    print("- Pool liquidity changed")
+                    print("- Try again immediately with fresh quote")
+                    print("=" * 70)
+                    return False
+                    
+            except Exception as e:
+                print(f"\n⚠️  Could not confirm transaction: {e}")
+                print(f"Check status manually: https://solscan.io/tx/{signature}")
+                return False
         else:
             print("\n❌ Transaction cancelled by user")
             return False

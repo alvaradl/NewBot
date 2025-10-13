@@ -19,7 +19,7 @@ import base64
 
 import requests
 from solders.keypair import Keypair
-from solders.transaction import Transaction
+from solders.transaction import Transaction, VersionedTransaction
 from coingecko_sdk import Coingecko, RateLimitError, APIError
 
 
@@ -586,7 +586,7 @@ def create_swap_transaction(
     rpc_endpoint: str,
     slippage_percent: float = 1.0,
     display_price_info: bool = True,
-) -> Transaction:
+) -> VersionedTransaction:
     """
     Creates a fully functional buy or sell swap transaction using Jupiter aggregator.
 
@@ -617,7 +617,7 @@ def create_swap_transaction(
         display_price_info: Whether to display price information from CoinGecko (default: True).
 
     Returns:
-        Transaction: A signed Solana transaction object, ready to be sent to the network.
+        VersionedTransaction: A signed Solana versioned transaction (v0), ready to be sent to the network.
 
     Raises:
         ValueError: If the action is invalid, quote fails, or transaction building fails.
@@ -746,12 +746,18 @@ def create_swap_transaction(
     out_amount = int(quote.get("outAmount", 0))
     price_impact = float(quote.get("priceImpactPct", 0))
     
+    # Detect the DEX/route being used
+    route_label = quote.get('routePlan', [{}])[0].get('swapInfo', {}).get('label', 'Unknown') if quote.get('routePlan') else 'Direct'
+    
     print("✅ Quote received")
     print(f"   Input: {in_amount:,} lamports")
     print(f"   Expected output: {out_amount:,} lamports")
     print(f"   Price impact: {price_impact:.4f}%")
-    print(f"   Route: {quote.get('routePlan', [{}])[0].get('swapInfo', {}).get('label', 'Unknown') if quote.get('routePlan') else 'Direct'}")
-
+    print(f"   Route: {route_label}")
+    
+    # Detect Pump.fun or Simple AMMs - they don't support shared accounts
+    is_simple_amm = "Pump.fun" in route_label or "pump" in route_label.lower()
+    
     # 3. Get swap transaction from Jupiter
     # -----------------------------------------------------------------
     # Jupiter builds the complete transaction for us
@@ -759,12 +765,28 @@ def create_swap_transaction(
     print("Step 3: Building swap transaction from Jupiter")
     print(f"{'='*70}")
     
+    # Disable shared accounts for Pump.fun/Simple AMMs
+    use_shared_accounts = not is_simple_amm
+    
+    if is_simple_amm:
+        print("ℹ️  Detected Pump.fun/Simple AMM - disabling shared accounts")
+    
     swap_response = get_jupiter_swap_transaction(
         quote=quote,
         user_public_key=str(owner),
         wrap_unwrap_sol=True,  # Automatically wrap/unwrap SOL
-        use_shared_accounts=True  # Use shared accounts to reduce tx size
+        use_shared_accounts=use_shared_accounts
     )
+    
+    # If shared accounts fail, retry without them
+    if not swap_response and use_shared_accounts:
+        print("⚠️  Retrying without shared accounts (required for Pump.fun/Simple AMMs)...")
+        swap_response = get_jupiter_swap_transaction(
+            quote=quote,
+            user_public_key=str(owner),
+            wrap_unwrap_sol=True,
+            use_shared_accounts=False  # Disable shared accounts
+        )
     
     if not swap_response:
         raise ValueError("Failed to get swap transaction from Jupiter")
@@ -782,10 +804,11 @@ def create_swap_transaction(
     # Deserialize the transaction from base64
     try:
         swap_tx_bytes = base64.b64decode(swap_tx_base64)
-        transaction = Transaction.from_bytes(swap_tx_bytes)
+        # Jupiter returns Versioned Transactions (v0) by default
+        transaction = VersionedTransaction.from_bytes(swap_tx_bytes)
         print("✅ Transaction deserialized successfully")
         print("   Transaction type: Versioned Transaction (v0)")
-        print(f"   Transaction contains {len(transaction.message.instructions) if hasattr(transaction, 'message') else 'unknown'} instructions")
+        print(f"   Transaction size: {len(swap_tx_bytes)} bytes")
     except Exception as e:
         raise ValueError(f"Failed to deserialize transaction: {e}")
 
@@ -797,9 +820,11 @@ def create_swap_transaction(
     print(f"{'='*70}")
     
     try:
-        # Sign the transaction with the user's keypair
-        transaction.sign([keypair])
+        # VersionedTransaction is signed during construction, not with .sign()
+        # We need to create a new VersionedTransaction with the message and keypair
+        signed_transaction = VersionedTransaction(transaction.message, [keypair])
         print(f"✅ Transaction signed by {owner}")
+        transaction = signed_transaction
     except Exception as e:
         raise ValueError(f"Failed to sign transaction: {e}")
     
