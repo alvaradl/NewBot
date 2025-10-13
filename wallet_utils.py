@@ -190,7 +190,7 @@ def get_coingecko_client() -> Coingecko:
     Initialize and return a CoinGecko API client.
     
     This function creates a reusable CoinGecko client instance with automatic
-    retries enabled. It loads the API key from the COINGECKO_PRO_API_KEY
+    retries enabled. It loads the API key from the COINGECKO_DEMO_API_KEY
     environment variable if available.
     
     Returns:
@@ -200,13 +200,13 @@ def get_coingecko_client() -> Coingecko:
         client = get_coingecko_client()
         price_data = client.simple.price.get(ids="bitcoin", vs_currencies="usd")
     """
-    api_key = os.environ.get("COINGECKO_PRO_API_KEY")
+    api_key = os.environ.get("COINGECKO_DEMO_API_KEY")
     
     if api_key:
-        # Initialize Pro client with API key
+        # Initialize demo tier client with API key
         client = Coingecko(
-            pro_api_key=api_key,
-            environment="pro",
+            demo_api_key=api_key,
+            environment="demo",
             max_retries=3,
         )
     else:
@@ -249,25 +249,21 @@ def get_token_price_by_contract(
     
     try:
         # Get token data by contract address
+        # Note: The SDK's contract.get() only accepts id and contract_address
+        # It returns all data by default, and we extract what we need
         response = client.coins.contract.get(
             id=platform,
-            contract_address=contract_address,
-            localization=False,
-            tickers=False,
-            market_data=True,
-            community_data=False,
-            developer_data=False,
-            sparkline=False
+            contract_address=contract_address
         )
         
         if response and hasattr(response, 'market_data') and response.market_data:
             market_data = response.market_data
             
-            # Extract relevant price information
+            # Extract relevant price information (CoinGecko SDK returns Pydantic models)
             price_info = {
-                'price': market_data.current_price.get(vs_currency, 0) if market_data.current_price else 0,
-                'market_cap': market_data.market_cap.get(vs_currency, 0) if market_data.market_cap else 0,
-                '24h_vol': market_data.total_volume.get(vs_currency, 0) if market_data.total_volume else 0,
+                'price': getattr(market_data.current_price, vs_currency, 0) if market_data.current_price else 0,
+                'market_cap': getattr(market_data.market_cap, vs_currency, 0) if market_data.market_cap else 0,
+                '24h_vol': getattr(market_data.total_volume, vs_currency, 0) if market_data.total_volume else 0,
                 '24h_change': market_data.price_change_percentage_24h or 0,
                 'name': response.name if hasattr(response, 'name') else 'Unknown',
                 'symbol': response.symbol.upper() if hasattr(response, 'symbol') else 'UNKNOWN'
@@ -311,8 +307,10 @@ def get_sol_price(vs_currency: str = "usd") -> Optional[float]:
             vs_currencies=vs_currency,
         )
         
-        if price_data and 'solana' in price_data:
-            return price_data['solana'].get(vs_currency, 0)
+        # CoinGecko SDK returns Pydantic models, access via attributes
+        if price_data and hasattr(price_data, 'solana'):
+            solana_price = getattr(price_data.solana, vs_currency, None)
+            return float(solana_price) if solana_price else None
         
         return None
         
@@ -328,8 +326,8 @@ def get_sol_price(vs_currency: str = "usd") -> Optional[float]:
 
 
 # Jupiter DEX Aggregator Constants
-# Official Jupiter API v6 endpoint
-JUPITER_API_BASE = "https://quote-api.jup.ag/v6"
+# Official Jupiter API endpoint
+JUPITER_API_BASE = "https://lite-api.jup.ag/swap/v1"
 WRAPPED_SOL_MINT = "So11111111111111111111111111111111111111112"  # wSOL
 
 
@@ -342,12 +340,12 @@ def get_jupiter_quote(
     max_accounts: Optional[int] = None
 ) -> Optional[Dict]:
     """
-    Get a swap quote from Jupiter aggregator API v6.
+    Get a swap quote from Jupiter aggregator API.
     
     Jupiter aggregates liquidity from multiple DEXes on Solana to find
     the best swap route. This uses the official Jupiter Quote API.
     
-    Reference: https://station.jup.ag/api-v6/get-quote
+    Reference: https://station.jup.ag/docs/apis/swap-api
     
     Args:
         input_mint: The mint address of the input token.
@@ -384,7 +382,7 @@ def get_jupiter_quote(
             print(f"Price impact: {quote['priceImpactPct']}%")
     """
     try:
-        # Build query parameters according to Jupiter API v6 spec
+        # Build query parameters according to Jupiter API spec
         params = {
             "inputMint": input_mint,
             "outputMint": output_mint,
@@ -452,12 +450,12 @@ def get_jupiter_swap_transaction(
     as_legacy_transaction: bool = False
 ) -> Optional[Dict]:
     """
-    Get a serialized swap transaction from Jupiter Swap API v6.
+    Get a serialized swap transaction from Jupiter Swap API.
     
     This function calls the Jupiter Swap API to build a complete transaction
     that can be signed and sent to the Solana network.
     
-    Reference: https://station.jup.ag/api-v6/post-swap
+    Reference: https://station.jup.ag/docs/apis/swap-api
     
     Args:
         quote: The full quote response object from get_jupiter_quote().
@@ -500,7 +498,7 @@ def get_jupiter_swap_transaction(
                 # Deserialize and sign the transaction
     """
     try:
-        # Build request body according to Jupiter Swap API v6 spec
+        # Build request body according to Jupiter Swap API spec
         request_data = {
             "quoteResponse": quote,
             "userPublicKey": user_public_key,

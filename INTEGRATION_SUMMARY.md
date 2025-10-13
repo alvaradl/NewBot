@@ -198,8 +198,8 @@ To send this transaction, use:
 
 ### CoinGecko API Key (Optional)
 ```bash
-# Get better rate limits with Pro API
-export COINGECKO_PRO_API_KEY="CG-your-key"
+# Get better rate limits with Demo API
+export COINGECKO_DEMO_API_KEY="CG-your-key"
 ```
 
 **Free tier works fine** for most use cases!
@@ -260,7 +260,7 @@ print(f"Price: ${info['price']}")
 
 ## Support
 
-- Jupiter API: https://station.jup.ag/docs
+- Jupiter API: https://station.jup.ag/docs/apis/swap-api
 - CoinGecko API: https://docs.coingecko.com/
 - Solana Docs: https://docs.solana.com/
 

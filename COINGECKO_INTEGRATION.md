@@ -12,7 +12,7 @@ The `wallet_utils.py` module now includes CoinGecko API integration to fetch rea
 
 Creates a reusable CoinGecko API client with automatic retry handling.
 
-- **Pro API Support**: Automatically uses Pro API if `COINGECKO_PRO_API_KEY` environment variable is set
+- **Demo API Support**: Automatically uses Demo API if `COINGECKO_DEMO_API_KEY` environment variable is set
 - **Free Tier Fallback**: Falls back to free tier if no API key is provided
 - **Automatic Retries**: Configured with `max_retries=3` for reliability
 
@@ -114,29 +114,29 @@ python example_usage.py
 - Basic endpoints only
 - Public data only
 
-### Using Pro API (Recommended)
+### Using Demo API (Recommended)
 
 For better rate limits and additional features:
 
-1. Get an API key from [CoinGecko Pro](https://www.coingecko.com/en/api/pricing)
+1. Get an API key from [CoinGecko](https://www.coingecko.com/en/api/pricing)
 
 2. Set the environment variable:
    ```bash
    # Windows PowerShell
-   $env:COINGECKO_PRO_API_KEY="CG-your-api-key-here"
+   $env:COINGECKO_DEMO_API_KEY="CG-your-api-key-here"
    
    # Linux/Mac
-   export COINGECKO_PRO_API_KEY="CG-your-api-key-here"
+   export COINGECKO_DEMO_API_KEY="CG-your-api-key-here"
    ```
 
 3. Or use a `.env` file:
    ```
-   COINGECKO_PRO_API_KEY=CG-your-api-key-here
+   COINGECKO_DEMO_API_KEY=CG-your-api-key-here
    ```
 
-**Pro Tier Benefits:**
+**Demo Tier Benefits:**
 - Higher rate limits (500+ calls per minute)
-- Access to Pro endpoints
+- Access to Demo endpoints
 - Better reliability
 - Priority support
 

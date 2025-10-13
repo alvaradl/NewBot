@@ -1,16 +1,16 @@
-# Jupiter API v6 Implementation Guide
+# Jupiter API Implementation Guide
 
 ## Overview
 
-This implementation uses **Jupiter API v6**, the official aggregator API for Solana swaps. Jupiter finds the best swap routes across 20+ DEXes including Raydium, Orca, Serum, Lifinity, and more.
+This implementation uses **Jupiter API**, the official aggregator API for Solana swaps. Jupiter finds the best swap routes across 20+ DEXes including Raydium, Orca, Serum, Lifinity, and more.
 
-**Official Documentation**: https://station.jup.ag/api-v6/
+**Official Documentation**: https://station.jup.ag/docs/apis/swap-api
 
 ## Architecture
 
 ### Two-Step Process
 
-Jupiter API v6 uses a simple two-step process:
+Jupiter API uses a simple two-step process:
 
 1. **GET /quote** - Get the best swap route and price
 2. **POST /swap** - Build the transaction based on the quote
@@ -39,7 +39,7 @@ Sign & Send Transaction
 
 ### 1. Quote API (`get_jupiter_quote`)
 
-**Endpoint**: `GET https://quote-api.jup.ag/v6/quote`
+**Endpoint**: `GET https://lite-api.jup.ag/swap/v1/quote`
 
 **Required Parameters**:
 - `inputMint` - Input token mint address
@@ -87,7 +87,7 @@ Sign & Send Transaction
 
 ### 2. Swap API (`get_jupiter_swap_transaction`)
 
-**Endpoint**: `POST https://quote-api.jup.ag/v6/swap`
+**Endpoint**: `POST https://lite-api.jup.ag/swap/v1/swap`
 
 **Required Body**:
 ```json
@@ -334,7 +334,7 @@ swap_response = get_jupiter_swap_transaction(
 
 ### Rate Limits
 
-Jupiter API v6 is **free and public** with generous rate limits:
+Jupiter API is **free and public** with generous rate limits:
 - No API key required
 - ~600 requests per minute
 - No cost per transaction
@@ -453,12 +453,12 @@ get_jupiter_swap_transaction(..., use_shared_accounts=True)
 
 ## Updates & Versioning
 
-**Current Version**: Jupiter API v6
+**Current Version**: Jupiter API
 
 Jupiter API is stable and well-documented. Changes are rare and announced well in advance.
 
 **Stay Updated**:
-- Official Docs: https://station.jup.ag/api-v6/
+- Official Docs: https://station.jup.ag/docs/apis/swap-api
 - Twitter: @JupiterExchange
 - Discord: Official Jupiter Discord
 
@@ -482,7 +482,7 @@ Jupiter API is stable and well-documented. Changes are rare and announced well i
 ## Summary
 
 This implementation provides:
-- ✅ **Full Jupiter API v6 compliance**
+- ✅ **Full Jupiter API compliance**
 - ✅ **Proper error handling** with specific error codes
 - ✅ **Versioned Transaction (v0)** support
 - ✅ **Auto priority fees** for faster execution
@@ -495,7 +495,7 @@ You're now ready to perform production-quality swaps on Solana using Jupiter! �
 ---
 
 **Questions?** Check the official Jupiter documentation:
-- API v6 Guide: https://station.jup.ag/api-v6/
-- Quote API: https://station.jup.ag/api-v6/get-quote
-- Swap API: https://station.jup.ag/api-v6/post-swap
+- API Guide: https://station.jup.ag/docs/apis/swap-api
+- Quote API: https://station.jup.ag/docs/apis/swap-api
+- Swap API: https://station.jup.ag/docs/apis/swap-api
 

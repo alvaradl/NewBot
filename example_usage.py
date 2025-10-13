@@ -87,7 +87,7 @@ def main():
     print("\n" + "=" * 70)
     print("Examples completed!")
     print("=" * 70)
-    print("\nNote: To use the CoinGecko Pro API, set the COINGECKO_PRO_API_KEY")
+    print("\nNote: To use the CoinGecko Demo API, set the COINGECKO_DEMO_API_KEY")
     print("environment variable with your API key.")
     print("Otherwise, the free tier will be used (with rate limits).")
 

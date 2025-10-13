@@ -173,11 +173,11 @@ def main():
     print("🚀" * 40 + "\n")
     
     # Check if API key is set
-    if os.environ.get("COINGECKO_PRO_API_KEY"):
-        print("✅ CoinGecko Pro API key detected")
+    if os.environ.get("COINGECKO_DEMO_API_KEY"):
+        print("✅ CoinGecko Demo API key detected")
     else:
         print("ℹ️  Using CoinGecko free tier (rate limits apply)")
-        print("   Set COINGECKO_PRO_API_KEY environment variable for Pro features\n")
+        print("   Set COINGECKO_DEMO_API_KEY environment variable for Demo features\n")
     
     # Run examples
     # NOTE: Comment out examples you don't want to run

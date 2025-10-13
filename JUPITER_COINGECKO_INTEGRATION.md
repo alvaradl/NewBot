@@ -142,14 +142,14 @@ Required packages:
 
 ### 2. Configure CoinGecko API (Optional)
 
-For better rate limits, set up a Pro API key:
+For better rate limits, set up a Demo API key:
 
 ```bash
 # Windows PowerShell
-$env:COINGECKO_PRO_API_KEY="CG-your-api-key-here"
+$env:COINGECKO_DEMO_API_KEY="CG-your-api-key-here"
 
 # Linux/Mac
-export COINGECKO_PRO_API_KEY="CG-your-api-key-here"
+export COINGECKO_DEMO_API_KEY="CG-your-api-key-here"
 ```
 
 **Free tier works fine** for most use cases (10-50 calls/minute).
