@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@raydium-io/raydium-sdk-v2": "^0.2.30-alpha",
+    "bs58": "^6.0.0"
+  }
+}
