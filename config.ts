@@ -4,7 +4,7 @@ import { TOKEN_PROGRAM_ID, TOKEN_2022_PROGRAM_ID } from '@solana/spl-token'
 import bs58 from 'bs58'
 import { convertSecretKeyToBase58 } from './convert'
 export const owner: Keypair = Keypair.fromSecretKey(bs58.decode(convertSecretKeyToBase58()))
-export const connection = new Connection('https://api.mainnet-beta.solana.com') //<YOUR_RPC_URL>
+export const connection = new Connection('https://mainnet.helius-rpc.com/?api-key=7f360969-cc4e-41de-ad44-5443224cbadc') //<YOUR_RPC_URL>
 // export const connection = new Connection(clusterApiUrl('devnet')) //<YOUR_RPC_URL>
 export const txVersion = TxVersion.V0 // or TxVersion.LEGACY
 const cluster = 'mainnet' // 'mainnet' | 'devnet'
@@ -22,7 +22,7 @@ export const initSdk = async (params?: { loadToken?: boolean }) => {
     disableFeatureCheck: true,
     disableLoadToken: !params?.loadToken,
     blockhashCommitment: 'finalized',
-     ...(cluster === 'devnet'
+     ...(cluster === 'mainnet'
       ? {
           urlConfigs: {
             BASE_HOST: 'https://api-v3-devnet.raydium.io',
@@ -65,6 +65,6 @@ export const fetchTokenAccountData = async () => {
   })
   return tokenAccountData
 }
-
-export const grpcUrl = '<YOUR_GRPC_URL>'
-export const grpcToken = '<YOUR_GRPC_TOKEN>'
+// Sign up for a GRPC for better performance when retrieving token account data
+// export const grpcUrl = '<YOUR_GRPC_URL>'
+// export const grpcToken = '<YOUR_GRPC_TOKEN>'
