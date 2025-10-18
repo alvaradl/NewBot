@@ -8,14 +8,15 @@
     "dotenv": "^16.4.5"
   },
   "devDependencies": {
+    "@types/bn.js": "^5.2.0",
     "@types/node": "^22.10.2",
     "typescript": "^5.7.2"
   },
   "scripts": {
-  "build": "tsc",
-  "start": "node --no-deprecation dist/main.js",
-  "dev": "tsc && node --no-deprecation dist/main.js",
-  "convert": "tsc && node --no-deprecation dist/convert.js",
-  "trade": "tsc && node --no-deprecation dist/radyum/trade.js"
+    "build": "tsc",
+    "start": "node --no-deprecation dist/main.js",
+    "dev": "tsc && node --no-deprecation dist/main.js",
+    "convert": "tsc && node --no-deprecation dist/convert.js",
+    "trade": "tsc && node --no-deprecation dist/radyum/trade.js"
   }
 }

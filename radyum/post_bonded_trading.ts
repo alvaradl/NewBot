@@ -69,19 +69,19 @@ export async function get_transaction(swapResponse: SwapCompute, isInputSol: boo
     return swapTransactions
 }
 async function main(){
-    const inputMint = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v' // USDC
+    const inputMint = '579gSWU44PVaT79feDq4txbiC71uQERyDhg8Bagcpump' // USDC
     const outputMint = 'So11111111111111111111111111111111111111112'  // SOL
     
     // Get all token accounts for the wallet
-    const tokenAccountData = await fetchTokenAccountData()
+    const { tokenAccounts } = await fetchTokenAccountData()
     
     // Find the USDC token account
-    const inputTokenAccount = tokenAccountData.tokenAccounts.find(
+    const inputTokenAccount = tokenAccounts.find(
         acc => acc.mint.toBase58() === inputMint
     )
-    
+    console.log("Input token account: ", tokenAccounts)
     if (!inputTokenAccount || !inputTokenAccount.publicKey) {
-        console.log('⚠️  USDC token account not found. You may need to create it or you don\'t have USDC.')
+        console.log('USDC token account not found. You may need to create it or you don\'t have USDC.')
         return
     }
     
@@ -95,16 +95,16 @@ async function main(){
         100000000  // 100 USDC (100 * 10^6)
     )
     
-    // Get swap transaction
-    const swapTransactions = await get_transaction(
-        swapResponse, 
-        false,                        // isInputSol = false (we're swapping USDC)
-        true,                         // isOutputSol = true (we want SOL, not wrapped SOL)
-        inputTokenAccount.publicKey,  // Our USDC token account
-        undefined                     // undefined because output is SOL
-    )
+    // // Get swap transaction
+    // const swapTransactions = await get_transaction(
+    //     swapResponse, 
+    //     false,                        // isInputSol = false (we're swapping USDC)
+    //     true,                         // isOutputSol = true (we want SOL, not wrapped SOL)
+    //     inputTokenAccount.publicKey,  // Our USDC token account
+    //     undefined                     // undefined because output is SOL
+    // )
     
-    console.log('Swap transaction ready!')
+    // console.log('Swap transaction ready!')
 }
 
 main().catch(console.error)

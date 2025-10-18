@@ -6,7 +6,7 @@ import { convertSecretKeyToBase58 } from '../convert.js'
 import { config } from 'dotenv';
 config();
 export const owner: Keypair = Keypair.fromSecretKey(bs58.decode(convertSecretKeyToBase58()))
-export const connection = new Connection('https://mainnet.helius-rpc.com/?api-key=' + process.env.HELIUS_API_KEY) //<YOUR_RPC_URL>
+export const connection = new Connection('https://mainnet.helius-rpc.com/?api-key=' + process.env.HELIUS_RPC_APIKEY) //<YOUR_RPC_URL>
 // export const connection = new Connection(clusterApiUrl('devnet')) //<YOUR_RPC_URL>
 export const txVersion = TxVersion.V0 // or TxVersion.LEGACY
 const cluster = 'mainnet' // 'mainnet' | 'devnet'
@@ -65,6 +65,7 @@ export const fetchTokenAccountData = async () => {
       value: [...tokenAccountResp.value, ...token2022Req.value],
     },
   })
+  // console.log("Token account data: ", tokenAccountData)
   return tokenAccountData
 }
 // Sign up for a GRPC for better performance when retrieving token account data
