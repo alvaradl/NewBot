@@ -16,7 +16,7 @@
     "sourceMap": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["main.ts", "wallet_utils.ts", "convert.ts"],
+  "include": ["main.ts", "wallet_utils.ts", "convert.ts", "radyum/**/*.ts"],
   "exclude": ["node_modules", "dist", "**/*.spec.ts"]
 }
 

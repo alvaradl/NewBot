@@ -15,6 +15,7 @@
   "build": "tsc",
   "start": "node --no-deprecation dist/main.js",
   "dev": "tsc && node --no-deprecation dist/main.js",
-  "convert": "tsc && node --no-deprecation dist/convert.js"
+  "convert": "tsc && node --no-deprecation dist/convert.js",
+  "trade": "tsc && node --no-deprecation dist/radyum/trade.js"
   }
 }

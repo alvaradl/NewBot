@@ -2,9 +2,11 @@ import { Raydium, TxVersion, parseTokenAccountResp } from '@raydium-io/raydium-s
 import { Connection, Keypair, clusterApiUrl } from '@solana/web3.js'
 import { TOKEN_PROGRAM_ID, TOKEN_2022_PROGRAM_ID } from '@solana/spl-token'
 import bs58 from 'bs58'
-import { convertSecretKeyToBase58 } from './convert'
+import { convertSecretKeyToBase58 } from '../convert.js'
+import { config } from 'dotenv';
+config();
 export const owner: Keypair = Keypair.fromSecretKey(bs58.decode(convertSecretKeyToBase58()))
-export const connection = new Connection('https://mainnet.helius-rpc.com/?api-key=7f360969-cc4e-41de-ad44-5443224cbadc') //<YOUR_RPC_URL>
+export const connection = new Connection('https://mainnet.helius-rpc.com/?api-key=' + process.env.HELIUS_API_KEY) //<YOUR_RPC_URL>
 // export const connection = new Connection(clusterApiUrl('devnet')) //<YOUR_RPC_URL>
 export const txVersion = TxVersion.V0 // or TxVersion.LEGACY
 const cluster = 'mainnet' // 'mainnet' | 'devnet'
